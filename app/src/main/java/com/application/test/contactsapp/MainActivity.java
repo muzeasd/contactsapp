@@ -6,6 +6,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -22,6 +25,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import models.Contact;
+import recyclerview.ContactsAdapter;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -40,6 +49,10 @@ public class MainActivity extends AppCompatActivity
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
+    private List<Contact> mContactlist = new ArrayList<>();
+    private RecyclerView mRecyclerView;
+    private ContactsAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -109,8 +122,16 @@ public class MainActivity extends AppCompatActivity
             actionBar.addTab(tab);
         }
 
-    }
 
+        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        mAdapter = new ContactsAdapter(mContactlist);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mAdapter);
+
+        prepareContacts();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -209,5 +230,41 @@ public class MainActivity extends AppCompatActivity
             }
             return null;
         }
+    }
+
+    void prepareContacts()
+    {
+        Contact contact = new Contact();
+        contact.setName("Muzammil");
+        contact.setAddress("Lahore");
+        contact.setPhone("123456789");
+
+        Contact contact2 = new Contact();
+        contact2.setName("Akmal");
+        contact2.setAddress("Multan");
+        contact2.setPhone("123456789");
+
+        Contact contact3 = new Contact();
+        contact3.setName("Jamaal");
+        contact3.setAddress("Karachi");
+        contact3.setPhone("123456789");
+
+        Contact contact4 = new Contact();
+        contact4.setName("Khalid");
+        contact4.setAddress("Pindi");
+        contact4.setPhone("123456789");
+
+        Contact contact5 = new Contact();
+        contact5.setName("Haleem");
+        contact5.setAddress("Haiderabad");
+        contact5.setPhone("123456789");
+
+        mContactlist.add(contact);
+        mContactlist.add(contact2);
+        mContactlist.add(contact3);
+        mContactlist.add(contact4);
+        mContactlist.add(contact5);
+
+        mAdapter.notifyDataSetChanged();
     }
 }
