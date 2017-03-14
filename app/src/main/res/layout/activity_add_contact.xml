@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_add_contact"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:focusable="true"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:clickable="true"
-    android:background="?android:attr/selectableItemBackground"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.application.test.contactsapp.AddContactActivity">
 
     <TableRow>
 
@@ -17,7 +17,7 @@
         <TableRow>
             <TableLayout>
                 <TableRow>
-                    <TextView
+                    <EditText
                         android:id="@+id/name"
                         android:textColor="@color/black"
                         android:textSize="16dp"
@@ -29,7 +29,7 @@
                 </TableRow>
                 <TableRow>
                     <TableRow>
-                        <TextView
+                        <EditText
                             android:id="@+id/phone"
                             android:textColor="@color/black"
                             android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
                     </TableRow>
                 </TableRow>
                 <TableRow>
-                    <TextView
+                    <EditText
                         android:id="@+id/address"
                         android:textColor="@color/black"
                         android:layout_width="match_parent"
@@ -50,28 +50,29 @@
             </TableLayout>
         </TableRow>
     </TableRow>
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:id="@+id/email"-->
-            <!--android:textColor="@color/black"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Email"/>-->
-    <!--</TableRow>-->
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:id="@+id/country"-->
-            <!--android:textColor="@color/black"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Country"/>-->
-    <!--</TableRow>-->
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:id="@+id/skypeId"-->
-            <!--android:textColor="@color/black"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Skype Id"/>-->
-    <!--</TableRow>-->
+    <TableRow>
+        <EditText
+        android:id="@+id/email"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email"/>
+    </TableRow>
+    <TableRow>
+        <EditText
+        android:id="@+id/country"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Country"/>
+    </TableRow>
+    <TableRow>
+        <EditText
+        android:id="@+id/skypeId"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Skype Id"/>
+    </TableRow>
+
 </TableLayout>

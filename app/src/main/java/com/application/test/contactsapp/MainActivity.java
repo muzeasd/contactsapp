@@ -1,5 +1,6 @@
 package com.application.test.contactsapp;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -144,8 +145,21 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.add_menu)
+        {
+            Intent intent = new Intent(this, AddContactActivity.class);
+//            EditText editText = (EditText) findViewById(R.id.editText);
+//            String message = editText.getText().toString();
+//            intent.putExtra(EXTRA_MESSAGE, message);
+            startActivity(intent);
+        }
+        if (id == R.id.search_menu)
+        {
+            Toast.makeText(this, "Search Menu", Toast.LENGTH_SHORT).show();
+        }
+        if (id == R.id.action_settings)
+        {
+            Toast.makeText(this, "Settings Menu", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
