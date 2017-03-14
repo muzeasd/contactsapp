@@ -54,6 +54,10 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private ContactsAdapter mAdapter;
 
+    private List<Contact> mContactlistSystem = new ArrayList<>();
+    private RecyclerView mRecyclerViewSystem;
+    private ContactsAdapter mAdapterSystem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -121,16 +125,6 @@ public class MainActivity extends AppCompatActivity
 
             actionBar.addTab(tab);
         }
-
-
-        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-        mAdapter = new ContactsAdapter(mContactlist);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mAdapter);
-
-        prepareContacts();
     }
 
     @Override
@@ -162,6 +156,10 @@ public class MainActivity extends AppCompatActivity
      */
     public static class PlaceholderFragment extends Fragment
     {
+        private List<Contact> mContactlist = new ArrayList<>();
+        private RecyclerView mRecyclerView;
+        private ContactsAdapter mAdapter;
+
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -188,9 +186,104 @@ public class MainActivity extends AppCompatActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             View rootView = inflater.inflate(R.layout.fragment_contacts, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+            int fragment_number = getArguments().getInt(ARG_SECTION_NUMBER);
+            if(fragment_number == 1)
+            {
+                mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+                mAdapter = new ContactsAdapter(mContactlist);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager((MainActivity)getActivity());
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                mRecyclerView.setAdapter(mAdapter);
+
+                PrepareContacts_ContactsApp();
+            }
+            else
+            {
+                mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+                mAdapter = new ContactsAdapter(mContactlist);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager((MainActivity)getActivity());
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                mRecyclerView.setAdapter(mAdapter);
+
+                PrepareContacts_System();
+            }
+
             return rootView;
+        }
+
+        void PrepareContacts_ContactsApp()
+        {
+            Contact contact = new Contact();
+            contact.setName("Muzammil");
+            contact.setAddress("Lahore");
+            contact.setPhone("123456789");
+
+            Contact contact2 = new Contact();
+            contact2.setName("Akmal");
+            contact2.setAddress("Multan");
+            contact2.setPhone("123456789");
+
+            Contact contact3 = new Contact();
+            contact3.setName("Jamaal");
+            contact3.setAddress("Karachi");
+            contact3.setPhone("123456789");
+
+            Contact contact4 = new Contact();
+            contact4.setName("Khalid");
+            contact4.setAddress("Pindi");
+            contact4.setPhone("123456789");
+
+            Contact contact5 = new Contact();
+            contact5.setName("Haleem");
+            contact5.setAddress("Haiderabad");
+            contact5.setPhone("123456789");
+
+            mContactlist.add(contact);
+            mContactlist.add(contact2);
+            mContactlist.add(contact3);
+            mContactlist.add(contact4);
+            mContactlist.add(contact5);
+
+            mAdapter.notifyDataSetChanged();
+        }
+
+        void PrepareContacts_System()
+        {
+            Contact contact = new Contact();
+            contact.setName("System");
+            contact.setAddress("Lahore");
+            contact.setPhone("123456789");
+
+            Contact contact2 = new Contact();
+            contact2.setName("System");
+            contact2.setAddress("Multan");
+            contact2.setPhone("123456789");
+
+            Contact contact3 = new Contact();
+            contact3.setName("System");
+            contact3.setAddress("Karachi");
+            contact3.setPhone("123456789");
+
+            Contact contact4 = new Contact();
+            contact4.setName("System");
+            contact4.setAddress("Pindi");
+            contact4.setPhone("123456789");
+
+            Contact contact5 = new Contact();
+            contact5.setName("System");
+            contact5.setAddress("Haiderabad");
+            contact5.setPhone("123456789");
+
+            mContactlist.add(contact);
+            mContactlist.add(contact2);
+            mContactlist.add(contact3);
+            mContactlist.add(contact4);
+            mContactlist.add(contact5);
+
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -256,6 +349,42 @@ public class MainActivity extends AppCompatActivity
 
         Contact contact5 = new Contact();
         contact5.setName("Haleem");
+        contact5.setAddress("Haiderabad");
+        contact5.setPhone("123456789");
+
+        mContactlist.add(contact);
+        mContactlist.add(contact2);
+        mContactlist.add(contact3);
+        mContactlist.add(contact4);
+        mContactlist.add(contact5);
+
+        mAdapter.notifyDataSetChanged();
+    }
+
+    void prepareContactsSystem()
+    {
+        Contact contact = new Contact();
+        contact.setName("System");
+        contact.setAddress("Lahore");
+        contact.setPhone("123456789");
+
+        Contact contact2 = new Contact();
+        contact2.setName("System");
+        contact2.setAddress("Multan");
+        contact2.setPhone("123456789");
+
+        Contact contact3 = new Contact();
+        contact3.setName("System");
+        contact3.setAddress("Karachi");
+        contact3.setPhone("123456789");
+
+        Contact contact4 = new Contact();
+        contact4.setName("System");
+        contact4.setAddress("Pindi");
+        contact4.setPhone("123456789");
+
+        Contact contact5 = new Contact();
+        contact5.setName("System");
         contact5.setAddress("Haiderabad");
         contact5.setPhone("123456789");
 
