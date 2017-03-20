@@ -1,6 +1,10 @@
 package com.application.test.contactsapp;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -27,11 +31,15 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.ContactReaderContract;
+import data.ContactReaderDbHelper;
 import models.Contact;
 import recyclerview.ContactsAdapter;
+import utilities.BitmapUtility;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -148,9 +156,6 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.add_menu)
         {
             Intent intent = new Intent(this, AddContactActivity.class);
-//            EditText editText = (EditText) findViewById(R.id.editText);
-//            String message = editText.getText().toString();
-//            intent.putExtra(EXTRA_MESSAGE, message);
             startActivity(intent);
         }
         if (id == R.id.search_menu)
@@ -230,36 +235,47 @@ public class MainActivity extends AppCompatActivity
 
         void PrepareContacts_ContactsApp()
         {
-            Contact contact = new Contact();
-            contact.setName("Muzammil");
-            contact.setAddress("Lahore");
-            contact.setPhone("123456789");
 
-            Contact contact2 = new Contact();
-            contact2.setName("Akmal");
-            contact2.setAddress("Multan");
-            contact2.setPhone("123456789");
+            String query = "SELECT * FROM " + ContactReaderContract.ContactEntry.TABLE_NAME;
+            SQLiteDatabase database = ContactReaderDbHelper.getInstance(getContext()).getReadableDatabase();
+            Cursor cursor = database.rawQuery(query, null);
 
-            Contact contact3 = new Contact();
-            contact3.setName("Jamaal");
-            contact3.setAddress("Karachi");
-            contact3.setPhone("123456789");
+            if(cursor == null) return;
 
-            Contact contact4 = new Contact();
-            contact4.setName("Khalid");
-            contact4.setAddress("Pindi");
-            contact4.setPhone("123456789");
+            int name_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_NAME);
+            int address_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_ADDRESS);
+            int cellNo_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_CELLNO);
+            int emailId_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_EMAILID);
+            int city_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_CITY);
+            int country_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_COUNTRY);
+            int skypeId_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_SKYPEID);
+            int photo_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_PHOTO);
 
-            Contact contact5 = new Contact();
-            contact5.setName("Haleem");
-            contact5.setAddress("Haiderabad");
-            contact5.setPhone("123456789");
+            while(cursor.moveToNext())
+            {
+                String name = cursor.getString(name_index);
+                String address = cursor.getString(address_index);
+                String cellNo = cursor.getString(cellNo_index);
+                String emailId = cursor.getString(emailId_index);
+                String city = cursor.getString(city_index);
+                String country = cursor.getString(country_index);
+                String skypeId = cursor.getString(skypeId_index);
+                byte[] photo = cursor.getBlob(photo_index);
 
-            mContactlist.add(contact);
-            mContactlist.add(contact2);
-            mContactlist.add(contact3);
-            mContactlist.add(contact4);
-            mContactlist.add(contact5);
+                Bitmap bmp = (photo == null ?  BitmapFactory.decodeResource(getResources(), R.mipmap.ic_person_black_36dp) : BitmapUtility.getImage(photo));
+
+                Contact contact = new Contact();
+                contact.setName(name);
+                contact.setAddress(address);
+                contact.setCellNo(cellNo);
+                contact.setEmail(emailId);
+                contact.setCity(city);
+                contact.setCountry(country);
+                contact.setSkypeId(skypeId);
+                contact.setPhoto(bmp);
+
+                mContactlist.add(contact);
+            }
 
             mAdapter.notifyDataSetChanged();
         }
@@ -269,27 +285,27 @@ public class MainActivity extends AppCompatActivity
             Contact contact = new Contact();
             contact.setName("System");
             contact.setAddress("Lahore");
-            contact.setPhone("123456789");
+            contact.setCellNo("123456789");
 
             Contact contact2 = new Contact();
             contact2.setName("System");
             contact2.setAddress("Multan");
-            contact2.setPhone("123456789");
+            contact2.setCellNo("123456789");
 
             Contact contact3 = new Contact();
             contact3.setName("System");
             contact3.setAddress("Karachi");
-            contact3.setPhone("123456789");
+            contact3.setCellNo("123456789");
 
             Contact contact4 = new Contact();
             contact4.setName("System");
             contact4.setAddress("Pindi");
-            contact4.setPhone("123456789");
+            contact4.setCellNo("123456789");
 
             Contact contact5 = new Contact();
             contact5.setName("System");
             contact5.setAddress("Haiderabad");
-            contact5.setPhone("123456789");
+            contact5.setCellNo("123456789");
 
             mContactlist.add(contact);
             mContactlist.add(contact2);
@@ -337,77 +353,5 @@ public class MainActivity extends AppCompatActivity
             }
             return null;
         }
-    }
-
-    void prepareContacts()
-    {
-        Contact contact = new Contact();
-        contact.setName("Muzammil");
-        contact.setAddress("Lahore");
-        contact.setPhone("123456789");
-
-        Contact contact2 = new Contact();
-        contact2.setName("Akmal");
-        contact2.setAddress("Multan");
-        contact2.setPhone("123456789");
-
-        Contact contact3 = new Contact();
-        contact3.setName("Jamaal");
-        contact3.setAddress("Karachi");
-        contact3.setPhone("123456789");
-
-        Contact contact4 = new Contact();
-        contact4.setName("Khalid");
-        contact4.setAddress("Pindi");
-        contact4.setPhone("123456789");
-
-        Contact contact5 = new Contact();
-        contact5.setName("Haleem");
-        contact5.setAddress("Haiderabad");
-        contact5.setPhone("123456789");
-
-        mContactlist.add(contact);
-        mContactlist.add(contact2);
-        mContactlist.add(contact3);
-        mContactlist.add(contact4);
-        mContactlist.add(contact5);
-
-        mAdapter.notifyDataSetChanged();
-    }
-
-    void prepareContactsSystem()
-    {
-        Contact contact = new Contact();
-        contact.setName("System");
-        contact.setAddress("Lahore");
-        contact.setPhone("123456789");
-
-        Contact contact2 = new Contact();
-        contact2.setName("System");
-        contact2.setAddress("Multan");
-        contact2.setPhone("123456789");
-
-        Contact contact3 = new Contact();
-        contact3.setName("System");
-        contact3.setAddress("Karachi");
-        contact3.setPhone("123456789");
-
-        Contact contact4 = new Contact();
-        contact4.setName("System");
-        contact4.setAddress("Pindi");
-        contact4.setPhone("123456789");
-
-        Contact contact5 = new Contact();
-        contact5.setName("System");
-        contact5.setAddress("Haiderabad");
-        contact5.setPhone("123456789");
-
-        mContactlist.add(contact);
-        mContactlist.add(contact2);
-        mContactlist.add(contact3);
-        mContactlist.add(contact4);
-        mContactlist.add(contact5);
-
-        mAdapter.notifyDataSetChanged();
     }
 }

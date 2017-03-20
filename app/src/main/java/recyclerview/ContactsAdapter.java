@@ -5,6 +5,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.application.test.contactsapp.R;
@@ -25,12 +26,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ListCo
 
     public final static class ListContactViewHolder extends RecyclerView.ViewHolder {
         public TextView name, address, phone;
+        public ImageView imgView;
 
         public ListContactViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.name);
             address = (TextView) itemView.findViewById(R.id.address);
             phone = (TextView) itemView.findViewById(R.id.phone);
+            imgView = (ImageView) itemView.findViewById(R.id.imageViewViewContact);
         }
     }
 
@@ -58,7 +61,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ListCo
         Contact contact = mListContacts.get(position);
         holder.name.setText(contact.getName());
         holder.address.setText(contact.getAddress());
-        holder.phone.setText(contact.getPhone());
+        holder.phone.setText(contact.getCellNo());
+        holder.imgView.setImageBitmap(contact.getPhoto());
     }
 
     @Override

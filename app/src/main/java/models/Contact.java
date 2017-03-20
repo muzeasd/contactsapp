@@ -12,18 +12,51 @@ public class Contact //implements Parcelable
 {
     private String name;
     private String address;
-    private String phone;
+    private String cellNo;
     private String email;
-    private Bitmap Photo;
+    private String city;
+    private String country;
+    private String skypeId;
+    private Bitmap photo;
+
+    public String getCountry()
+    {
+        return country;
+    }
+
+    public void setCountry(String country)
+    {
+        this.country = country;
+    }
+
+    public String getCity()
+    {
+        return city;
+    }
+
+    public void setCity(String city)
+    {
+        this.city = city;
+    }
+
+    public String getSkypeId()
+    {
+        return skypeId;
+    }
+
+    public void setSkypeId(String skypeId)
+    {
+        this.skypeId = skypeId;
+    }
 
     public Bitmap getPhoto()
     {
-        return Photo;
+        return photo;
     }
 
     public void setPhoto(Bitmap photo)
     {
-        Photo = photo;
+        this.photo = photo;
     }
 
     public String getName()
@@ -46,14 +79,14 @@ public class Contact //implements Parcelable
         this.address = address;
     }
 
-    public String getPhone()
+    public String getCellNo()
     {
-        return phone;
+        return cellNo;
     }
 
-    public void setPhone(String phone)
+    public void setCellNo(String phone)
     {
-        this.phone = phone;
+        this.cellNo= phone;
     }
 
     public String getEmail()

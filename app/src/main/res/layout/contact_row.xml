@@ -13,7 +13,12 @@
 
     <TableRow>
 
-        <TableRow><ImageView android:src="@mipmap/ic_person_black_36dp"/></TableRow>
+        <TableRow>
+            <ImageView
+                android:id="@+id/imageViewViewContact"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_person_black_36dp"/>
+        </TableRow>
         <TableRow>
             <TableLayout>
                 <TableRow>

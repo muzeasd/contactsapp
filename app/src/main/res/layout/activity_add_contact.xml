@@ -13,66 +13,101 @@
 
     <TableRow>
 
-        <TableRow><ImageView android:src="@mipmap/ic_person_black_36dp"/></TableRow>
-        <TableRow>
-            <TableLayout>
-                <TableRow>
-                    <EditText
-                        android:id="@+id/name"
-                        android:textColor="@color/black"
-                        android:textSize="16dp"
-                        android:textStyle="bold"
-                        android:layout_alignParentTop="true"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Name"/>
-                </TableRow>
-                <TableRow>
-                    <TableRow>
-                        <EditText
-                            android:id="@+id/phone"
-                            android:textColor="@color/black"
-                            android:layout_width="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_height="wrap_content"
-                            android:text="Phone"/>
-
-                    </TableRow>
-                </TableRow>
-                <TableRow>
-                    <EditText
-                        android:id="@+id/address"
-                        android:textColor="@color/black"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Address"/>
-                </TableRow>
-            </TableLayout>
-        </TableRow>
+        <TableLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                         android:layout_width="match_parent"
+                         android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/imageViewAddContact"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_person_black_36dp"/>
+                <TextView
+                    android:id="@+id/textViewImageAddContact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:padding="8dip"
+                    android:background="#aa000000"
+                    android:textColor="@color/orange"
+                    android:textStyle="bold"
+                    android:textSize="20dp"
+                    android:text="Click" />
+            </FrameLayout>
+        </TableLayout>
+        <TableLayout android:layout_weight="3" android:layout_width="0dp" android:layout_height="wrap_content">
+            <TableRow>
+                <EditText
+                    android:id="@+id/txtName"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Name"/>
+            </TableRow>
+            <TableRow>
+                <EditText
+                    android:id="@+id/txtCellNo"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_height="wrap_content"
+                    android:hint="Cell No"/>
+            </TableRow>
+            <TableRow>
+                <EditText
+                    android:id="@+id/txtAddress"
+                    android:textColor="@color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Address"/>
+            </TableRow>
+        </TableLayout>
     </TableRow>
     <TableRow>
         <EditText
-        android:id="@+id/email"
+        android:id="@+id/txtEmail"
         android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Email"/>
+        android:hint="Email"/>
     </TableRow>
     <TableRow>
         <EditText
-        android:id="@+id/country"
+        android:id="@+id/txtCity"
         android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Country"/>
+        android:hint="City"/>
     </TableRow>
     <TableRow>
         <EditText
-        android:id="@+id/skypeId"
+        android:id="@+id/txtCountry"
         android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Skype Id"/>
+        android:hint="Country"/>
+    </TableRow>
+    <TableRow>
+        <EditText
+        android:id="@+id/txtSkypeId"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Skype Id"/>
+    </TableRow>
+    <TableRow>
+        <Button
+            android:id="@+id/btnAddContact"
+            android:text="Add Contact"
+            android:onClick="OnClick_AddContact"/>
     </TableRow>
 
 </TableLayout>
