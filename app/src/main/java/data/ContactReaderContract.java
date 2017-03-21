@@ -17,7 +17,8 @@ public class ContactReaderContract
                     ContactEntry._ID + " INTEGER PRIMARY KEY," +
                     ContactEntry.COLUMN_NAME_NAME + " TEXT," +
                     ContactEntry.COLUMN_NAME_ADDRESS + " TEXT," +
-                    ContactEntry.COLUMN_NAME_CELLNO + " TEXT," +
+                    ContactEntry.COLUMN_NAME_PHONE + " TEXT," +
+                    ContactEntry.COLUMN_NAME_PHONETYPE + " INTEGER," +
                     ContactEntry.COLUMN_NAME_EMAILID + " TEXT," +
                     ContactEntry.COLUMN_NAME_CITY + " TEXT," +
                     ContactEntry.COLUMN_NAME_COUNTRY + " TEXT," +
@@ -32,7 +33,8 @@ public class ContactReaderContract
         public static final String TABLE_NAME = "Contacts";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_ADDRESS = "address";
-        public static final String COLUMN_NAME_CELLNO = "cellNo";
+        public static final String COLUMN_NAME_PHONE = "phoneNo";
+        public static final String COLUMN_NAME_PHONETYPE = "phoneNoType";
         public static final String COLUMN_NAME_EMAILID = "emailId";
         public static final String COLUMN_NAME_CITY = "city";
         public static final String COLUMN_NAME_COUNTRY = "country";

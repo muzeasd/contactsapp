@@ -13,17 +13,16 @@
 
     <TableRow>
 
-        <TableRow>
+        <TableLayout>
             <ImageView
-                android:id="@+id/imageViewViewContact"
+                android:id="@+id/imageViewContactRow"
                 android:scaleType="fitXY"
                 android:src="@mipmap/ic_person_black_36dp"/>
-        </TableRow>
-        <TableRow>
-            <TableLayout>
+        </TableLayout>
+        <TableLayout android:layout_marginLeft="15dp" android:layout_marginTop="-5dp">
                 <TableRow>
                     <TextView
-                        android:id="@+id/name"
+                        android:id="@+id/txtNameContactRow"
                         android:textColor="@color/black"
                         android:textSize="16dp"
                         android:textStyle="bold"
@@ -35,7 +34,7 @@
                 <TableRow>
                     <TableRow>
                         <TextView
-                            android:id="@+id/phone"
+                            android:id="@+id/txtPhoneNoContactRow"
                             android:textColor="@color/black"
                             android:layout_width="wrap_content"
                             android:layout_alignParentRight="true"
@@ -46,37 +45,12 @@
                 </TableRow>
                 <TableRow>
                     <TextView
-                        android:id="@+id/address"
+                        android:id="@+id/txtAddressContactRow"
                         android:textColor="@color/black"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Address"/>
                 </TableRow>
-            </TableLayout>
-        </TableRow>
+        </TableLayout>
     </TableRow>
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:id="@+id/email"-->
-            <!--android:textColor="@color/black"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Email"/>-->
-    <!--</TableRow>-->
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:id="@+id/country"-->
-            <!--android:textColor="@color/black"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Country"/>-->
-    <!--</TableRow>-->
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:id="@+id/skypeId"-->
-            <!--android:textColor="@color/black"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Skype Id"/>-->
-    <!--</TableRow>-->
 </TableLayout>

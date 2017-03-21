@@ -31,12 +31,16 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
+import constants.FunctionType;
 import data.ContactReaderContract;
 import data.ContactReaderDbHelper;
+import data.DatabaseHandler;
 import models.Contact;
 import recyclerview.ContactsAdapter;
 import utilities.BitmapUtility;
@@ -58,14 +62,6 @@ public class MainActivity extends AppCompatActivity
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
-    private List<Contact> mContactlist = new ArrayList<>();
-    private RecyclerView mRecyclerView;
-    private ContactsAdapter mAdapter;
-
-    private List<Contact> mContactlistSystem = new ArrayList<>();
-    private RecyclerView mRecyclerViewSystem;
-    private ContactsAdapter mAdapterSystem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -170,11 +166,17 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public SectionsPagerAdapter getSectionsPagerAdapter()
+    {
+        return mSectionsPagerAdapter;
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment
     {
+        private int FRAGMENT_INDEX = -1;
         private List<Contact> mContactlist = new ArrayList<>();
         private RecyclerView mRecyclerView;
         private ContactsAdapter mAdapter;
@@ -185,8 +187,7 @@ public class MainActivity extends AppCompatActivity
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {
-        }
+        public PlaceholderFragment() { }
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -195,9 +196,11 @@ public class MainActivity extends AppCompatActivity
         public static PlaceholderFragment newInstance(int sectionNumber)
         {
             PlaceholderFragment fragment = new PlaceholderFragment();
+
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
+
             return fragment;
         }
 
@@ -206,8 +209,8 @@ public class MainActivity extends AppCompatActivity
         {
             View rootView = inflater.inflate(R.layout.fragment_contacts, container, false);
 
-            int fragment_number = getArguments().getInt(ARG_SECTION_NUMBER);
-            if(fragment_number == 1)
+            FRAGMENT_INDEX = getArguments().getInt(ARG_SECTION_NUMBER);
+            if(FRAGMENT_INDEX == 1)
             {
                 mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
                 mAdapter = new ContactsAdapter(mContactlist);
@@ -233,85 +236,66 @@ public class MainActivity extends AppCompatActivity
             return rootView;
         }
 
+        @Override
+        public void onStart()
+        {
+            super.onStart();
+            UpdateGUI(FRAGMENT_INDEX == 1 ? FunctionType.ContactsApp : FunctionType.System);
+        }
+
+        public void UpdateGUI(FunctionType functionType)
+        {
+            if(functionType == FunctionType.ContactsApp)
+                PrepareContacts_ContactsApp();
+//            else
+//                PrepareContacts_System();
+        }
+
         void PrepareContacts_ContactsApp()
         {
+            DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+            List<Contact> contactList = dbHandler.GetContactsAll(FunctionType.ContactsApp, getContext(), getResources());
 
-            String query = "SELECT * FROM " + ContactReaderContract.ContactEntry.TABLE_NAME;
-            SQLiteDatabase database = ContactReaderDbHelper.getInstance(getContext()).getReadableDatabase();
-            Cursor cursor = database.rawQuery(query, null);
-
-            if(cursor == null) return;
-
-            int name_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_NAME);
-            int address_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_ADDRESS);
-            int cellNo_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_CELLNO);
-            int emailId_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_EMAILID);
-            int city_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_CITY);
-            int country_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_COUNTRY);
-            int skypeId_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_SKYPEID);
-            int photo_index = cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_PHOTO);
-
-            while(cursor.moveToNext())
-            {
-                String name = cursor.getString(name_index);
-                String address = cursor.getString(address_index);
-                String cellNo = cursor.getString(cellNo_index);
-                String emailId = cursor.getString(emailId_index);
-                String city = cursor.getString(city_index);
-                String country = cursor.getString(country_index);
-                String skypeId = cursor.getString(skypeId_index);
-                byte[] photo = cursor.getBlob(photo_index);
-
-                Bitmap bmp = (photo == null ?  BitmapFactory.decodeResource(getResources(), R.mipmap.ic_person_black_36dp) : BitmapUtility.getImage(photo));
-
-                Contact contact = new Contact();
-                contact.setName(name);
-                contact.setAddress(address);
-                contact.setCellNo(cellNo);
-                contact.setEmail(emailId);
-                contact.setCity(city);
-                contact.setCountry(country);
-                contact.setSkypeId(skypeId);
-                contact.setPhoto(bmp);
-
-                mContactlist.add(contact);
-            }
-
-            mAdapter.notifyDataSetChanged();
+            mContactlist.clear();
+            mContactlist.addAll(contactList);
+            if(mAdapter != null) mAdapter.notifyDataSetChanged();
         }
 
         void PrepareContacts_System()
         {
+            mContactlist.clear();
+
             Contact contact = new Contact();
             contact.setName("System");
             contact.setAddress("Lahore");
-            contact.setCellNo("123456789");
+            contact.setPhoneNo("123456789");
 
             Contact contact2 = new Contact();
             contact2.setName("System");
             contact2.setAddress("Multan");
-            contact2.setCellNo("123456789");
+            contact2.setPhoneNo("123456789");
 
             Contact contact3 = new Contact();
             contact3.setName("System");
             contact3.setAddress("Karachi");
-            contact3.setCellNo("123456789");
+            contact3.setPhoneNo("123456789");
 
             Contact contact4 = new Contact();
             contact4.setName("System");
             contact4.setAddress("Pindi");
-            contact4.setCellNo("123456789");
+            contact4.setPhoneNo("123456789");
 
             Contact contact5 = new Contact();
             contact5.setName("System");
             contact5.setAddress("Haiderabad");
-            contact5.setCellNo("123456789");
+            contact5.setPhoneNo("123456789");
 
             mContactlist.add(contact);
             mContactlist.add(contact2);
             mContactlist.add(contact3);
             mContactlist.add(contact4);
             mContactlist.add(contact5);
+
 
             mAdapter.notifyDataSetChanged();
         }
@@ -323,6 +307,7 @@ public class MainActivity extends AppCompatActivity
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter
     {
+        protected Hashtable<Integer, WeakReference<Fragment>> fragmentReferences = new Hashtable<>();
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -332,13 +317,20 @@ public class MainActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            Fragment fragment = PlaceholderFragment.newInstance(position + 1);
+            fragmentReferences.put(position, new WeakReference<Fragment>(fragment));
+            return fragment;
         }
 
         @Override
         public int getCount()
         {
             return 2;
+        }
+
+        public Fragment getFragment(int fragmentId) {
+            WeakReference<Fragment> ref = fragmentReferences.get(fragmentId);
+            return ref == null ? null : ref.get();
         }
 
         @Override

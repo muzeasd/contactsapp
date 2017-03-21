@@ -7,12 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.application.test.contactsapp.R;
 
 import java.util.List;
 
+import data.DatabaseHandler;
 import models.Contact;
+import models.ContactTag;
 
 /**
  * Created by Muzammil on 01/03/2017.
@@ -25,15 +28,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ListCo
     private SparseBooleanArray selectedItems;
 
     public final static class ListContactViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, address, phone;
+        public TextView id, name, address, phone;
         public ImageView imgView;
 
         public ListContactViewHolder(View itemView) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.name);
-            address = (TextView) itemView.findViewById(R.id.address);
-            phone = (TextView) itemView.findViewById(R.id.phone);
-            imgView = (ImageView) itemView.findViewById(R.id.imageViewViewContact);
+            name = (TextView) itemView.findViewById(R.id.txtNameContactRow);
+            address = (TextView) itemView.findViewById(R.id.txtAddressContactRow);
+            phone = (TextView) itemView.findViewById(R.id.txtPhoneNoContactRow);
+            imgView = (ImageView) itemView.findViewById(R.id.imageViewContactRow);
         }
     }
 
@@ -49,9 +52,31 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ListCo
     }
 
     @Override
-    public ListContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public ListContactViewHolder onCreateViewHolder(final ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_row, parent, false);
+        String parent_name = parent.getParent().getClass().getName();
+
+        // inflate the view
+        final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_row, parent, false);
+
+        // click_listener for this view
+        View.OnClickListener onClickListener = new View.OnClickListener(){
+            @Override
+            public void onClick(View v)
+            {
+                ContactTag contactTag = (ContactTag)itemView.getTag();
+
+                // first delete the contact from database
+                DatabaseHandler.getInstance().DeleteContact(parent.getContext(), contactTag.getContactId());
+
+                // then delete from the GUI list
+                DatabaseHandler.getInstance().UpdateGUI(parent.getContext(), contactTag.getFunctionType());
+            }
+        };
+
+        // attach the click_listener
+        itemView.setOnClickListener(onClickListener);
+
         return new ListContactViewHolder(itemView);
     }
 
@@ -61,8 +86,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ListCo
         Contact contact = mListContacts.get(position);
         holder.name.setText(contact.getName());
         holder.address.setText(contact.getAddress());
-        holder.phone.setText(contact.getCellNo());
+        holder.phone.setText(contact.getPhoneNo());
         holder.imgView.setImageBitmap(contact.getPhoto());
+
+        ContactTag contactTag = new ContactTag();
+        contactTag.setContactId((int)contact.getId());
+        contactTag.setFunctionType(contact.getFunctionType());
+
+        holder.itemView.setTag(contactTag);
     }
 
     @Override

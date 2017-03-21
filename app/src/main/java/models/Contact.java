@@ -4,20 +4,56 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import constants.FunctionType;
+import constants.PhoneNoType;
+
 /**
  * Created by Muzammil on 01/03/2017.
  */
 
 public class Contact //implements Parcelable
 {
+    private long id;
     private String name;
     private String address;
-    private String cellNo;
+    private String phoneNo;
+    private PhoneNoType phoneNoType;
     private String email;
     private String city;
     private String country;
     private String skypeId;
     private Bitmap photo;
+    private FunctionType functionType;
+
+    public void setPhoneNoType(int index)
+    {
+        this.phoneNoType = index == 1 ? PhoneNoType.Mobile : PhoneNoType.Landline;
+    }
+
+    public int getPhoneNoType()
+    {
+        return (int) phoneNoType.getValue();
+    }
+
+    public void setFunctionType(FunctionType functionType)
+    {
+        this.functionType = functionType;
+    }
+
+    public FunctionType getFunctionType()
+    {
+        return this.functionType;
+    }
+
+    public long getId()
+    {
+        return id;
+    }
+
+    public void setId(long id)
+    {
+        this.id = id;
+    }
 
     public String getCountry()
     {
@@ -79,14 +115,14 @@ public class Contact //implements Parcelable
         this.address = address;
     }
 
-    public String getCellNo()
+    public String getPhoneNo()
     {
-        return cellNo;
+        return phoneNo;
     }
 
-    public void setCellNo(String phone)
+    public void setPhoneNo(String phone)
     {
-        this.cellNo= phone;
+        this.phoneNo= phone;
     }
 
     public String getEmail()

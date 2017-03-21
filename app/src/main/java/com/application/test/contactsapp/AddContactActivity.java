@@ -15,6 +15,8 @@ import android.widget.ImageView;
 
 import data.ContactReaderContract;
 import data.ContactReaderDbHelper;
+import data.DatabaseHandler;
+import models.Contact;
 import utilities.BitmapUtility;
 
 public class AddContactActivity extends AppCompatActivity
@@ -50,30 +52,45 @@ public class AddContactActivity extends AppCompatActivity
     {
         String name = ((EditText) findViewById(R.id.txtName)).getText().toString();
         String address = ((EditText) findViewById(R.id.txtAddress)).getText().toString();
-        String cellNo = ((EditText) findViewById(R.id.txtCellNo)).getText().toString();
+        String phoneNo = ((EditText) findViewById(R.id.txtCellNo)).getText().toString();
+        int phoneNoType = 1;//index of a spinner (ONE based index)
         String email = ((EditText) findViewById(R.id.txtEmail)).getText().toString();
         String city = ((EditText) findViewById(R.id.txtCity)).getText().toString();
         String country = ((EditText) findViewById(R.id.txtCountry)).getText().toString();
         String skypeId = ((EditText) findViewById(R.id.txtSkypeId)).getText().toString();
         Bitmap photo = ((BitmapDrawable)m_ImageViewAddContact.getDrawable()).getBitmap();
 
-        byte[] imageBytes = null;
-        if(photo != null)
-            imageBytes = BitmapUtility.getBytes(photo);
+        Contact contact = new Contact();
+        contact.setName(name);
+        contact.setAddress(address);
+        contact.setPhoneNo(phoneNo);
+        contact.setPhoneNoType(phoneNoType);
+        contact.setEmail(email);
+        contact.setCity(city);
+        contact.setCountry(country);
+        contact.setSkypeId(skypeId);
+        contact.setPhoto(photo);
 
-        SQLiteDatabase database = ContactReaderDbHelper.getInstance(this).getWritableDatabase();
+        DatabaseHandler.getInstance().AddContact(this, contact);
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_NAME, name);
-        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_ADDRESS, address);
-        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_CELLNO, cellNo);
-        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_EMAILID, email);
-        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_CITY, city);
-        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_COUNTRY, country);
-        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_SKYPEID, skypeId);
-        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_PHOTO, imageBytes);
+//        byte[] imageBytes = null;
+//        if(photo != null)
+//            imageBytes = BitmapUtility.getBytes(photo);
+//
+//        SQLiteDatabase database = ContactReaderDbHelper.getInstance(this).getWritableDatabase();
+//
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_NAME, name);
+//        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_ADDRESS, address);
+//        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_PHONE, phoneNo);
+//        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_PHONETYPE, phoneNoType);
+//        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_EMAILID, email);
+//        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_CITY, city);
+//        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_COUNTRY, country);
+//        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_SKYPEID, skypeId);
+//        contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_PHOTO, imageBytes);
 
-        long id = database.insert(ContactReaderContract.ContactEntry.TABLE_NAME, null, contentValues);
+//        long id = database.insert(ContactReaderContract.ContactEntry.TABLE_NAME, null, contentValues);
 
         int a = 10;
         int b = 10;
