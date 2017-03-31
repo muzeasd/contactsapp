@@ -6,12 +6,13 @@ import android.os.Parcelable;
 
 import constants.FunctionType;
 import constants.PhoneNoType;
+import utilities.BitmapUtility;
 
 /**
  * Created by Muzammil on 01/03/2017.
  */
 
-public class Contact //implements Parcelable
+public class Contact implements Parcelable
 {
     private long id;
     private String name;
@@ -135,45 +136,60 @@ public class Contact //implements Parcelable
         this.email = email;
     }
 
+    public Contact() {}
 
+    protected Contact(Parcel in)
+    {
+        id = in.readLong();
+        name = in.readString();
+        address = in.readString();
+        phoneNo = in.readString();
+        phoneNoType.setValue(in.readInt());
+        email = in.readString();
+        city = in.readString();
+        country = in.readString();
+        skypeId = in.readString();
+        photo = (Bitmap)in.readParcelable(getClass().getClassLoader());
+//        byte[] imageBytes = null;
+//        in.readByteArray(imageBytes);
+//        photo = BitmapUtility.getImage(imageBytes);
+    }
 
-//    protected Contact(Parcel in)
-//    {
-//        name = in.readString();
-//        address = in.readString();
-//        phone = in.readString();
-//        email = in.readString();
-//        Photo = in.readParcelable(Bitmap.class.getClassLoader());
-//    }
-//
-//    public static final Creator<Contact> CREATOR = new Creator<Contact>()
-//    {
-//        @Override
-//        public Contact createFromParcel(Parcel in)
-//        {
-//            return new Contact(in);
-//        }
-//
-//        @Override
-//        public Contact[] newArray(int size)
-//        {
-//            return new Contact[size];
-//        }
-//    };
-//
-//    @Override
-//    public int describeContents()
-//    {
-//        return 0;
-//    }
-//
-//    @Override
-//    public void writeToParcel(Parcel dest, int flags)
-//    {
-//        dest.writeString(name);
-//        dest.writeString(address);
-//        dest.writeString(phone);
-//        dest.writeString(email);
-//        dest.writeParcelable(Photo, flags);
-//    }
+    public static final Creator<Contact> CREATOR = new Creator<Contact>()
+    {
+        @Override
+        public Contact createFromParcel(Parcel in)
+        {
+            return new Contact(in);
+        }
+
+        @Override
+        public Contact[] newArray(int size)
+        {
+            return new Contact[size];
+        }
+    };
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeLong(id);
+        dest.writeString(name);
+        dest.writeString(address);
+        dest.writeString(phoneNo);
+        dest.writeInt(phoneNoType.getValue());
+        dest.writeString(email);
+        dest.writeString(city);
+        dest.writeString(country);
+        dest.writeString(skypeId);
+        dest.writeParcelable(photo, flags);
+//        byte[] imageBytes = BitmapUtility.getBytes(this.getPhoto())
+//        dest.writeByteArray(imageBytes);
+    }
 }

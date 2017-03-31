@@ -9,26 +9,27 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.application.test.contactsapp.AddContactActivity">
+    tools:context="com.application.test.contactsapp.ManageContactActivity">
 
     <TableRow>
 
         <TableLayout
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
             <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                          android:layout_width="match_parent"
                          android:layout_height="match_parent">
                 <ImageView
-                    android:id="@+id/imageViewAddContact"
+                    android:id="@+id/imageViewUpdateContact"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@mipmap/ic_person_black_36dp"/>
                 <TextView
-                    android:id="@+id/textViewImageAddContact"
+                    android:id="@+id/textViewImageUpdateContact"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|bottom"
@@ -37,13 +38,28 @@
                     android:textColor="@color/orange"
                     android:textStyle="bold"
                     android:textSize="20dp"
-                    android:text="Click" />
+                    android:text="Click"/>
             </FrameLayout>
         </TableLayout>
         <TableLayout android:layout_weight="3" android:layout_width="0dp" android:layout_height="wrap_content">
             <TableRow>
+                <TextView android:layout_weight="2"/>
+                <ImageView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:src="@mipmap/ic_action_edit_black"
+                    android:onClick="OnClick_ToggleEdit"/>
+                <ImageView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:src="@mipmap/ic_action_delete_black"
+                    android:onClick="OnClick_DeleteContact"/>
+            </TableRow>
+            <TableRow>
                 <EditText
-                    android:id="@+id/txtName"
+                    android:id="@+id/txtNameUpdateContact"
                     android:textColor="@color/black"
                     android:textSize="16dp"
                     android:textStyle="bold"
@@ -55,7 +71,7 @@
             </TableRow>
             <TableRow>
                 <EditText
-                    android:id="@+id/txtCellNo"
+                    android:id="@+id/txtPhoneNoUpdateContact"
                     android:textColor="@color/black"
                     android:layout_alignParentRight="true"
                     android:layout_weight="1"
@@ -65,7 +81,7 @@
             </TableRow>
             <TableRow>
                 <EditText
-                    android:id="@+id/txtAddress"
+                    android:id="@+id/txtAddressUpdateContact"
                     android:textColor="@color/black"
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -76,48 +92,48 @@
     </TableRow>
     <TableRow>
         <EditText
-        android:id="@+id/txtEmail"
-        android:textColor="@color/black"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Email"/>
-    </TableRow>
-    <TableRow>
-        <EditText
-        android:id="@+id/txtCity"
-        android:textColor="@color/black"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="City"/>
-    </TableRow>
-    <TableRow>
-        <EditText
-        android:id="@+id/txtCountry"
-        android:textColor="@color/black"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Country"/>
-    </TableRow>
-    <TableRow>
-        <EditText
-        android:id="@+id/txtSkypeId"
-        android:textColor="@color/black"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Skype Id"/>
-    </TableRow>
-    <TableRow>
-        <Button
-            android:id="@+id/btnAddContact"
-            android:text="Add Contact"
+            android:id="@+id/txtEmailUpdateContact"
+            android:textColor="@color/black"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:onClick="OnClick_AddContact"/>
+            android:hint="Email"/>
+    </TableRow>
+    <TableRow>
+        <EditText
+            android:id="@+id/txtCityUpdateContact"
+            android:textColor="@color/black"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="City"/>
+    </TableRow>
+    <TableRow>
+        <EditText
+            android:id="@+id/txtCountryUpdateContact"
+            android:textColor="@color/black"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Country"/>
+    </TableRow>
+    <TableRow>
+        <EditText
+            android:id="@+id/txtSkypeIdUpdateContact"
+            android:textColor="@color/black"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Skype Id"/>
+    </TableRow>
+    <TableRow>
+        <Button
+            android:id="@+id/btnUpdateContact"
+            android:text="Update Contact"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="OnClick_UpdateContact"/>
     </TableRow>
 
 </TableLayout>

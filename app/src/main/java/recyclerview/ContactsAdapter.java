@@ -1,5 +1,7 @@
 package recyclerview;
 
+import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.application.test.contactsapp.ManageContactActivity;
 import com.application.test.contactsapp.R;
 
 import java.util.List;
@@ -54,7 +57,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ListCo
     @Override
     public ListContactViewHolder onCreateViewHolder(final ViewGroup parent, int viewType)
     {
-        String parent_name = parent.getParent().getClass().getName();
+//        String parent_name = parent.getParent().getClass().getName();
 
         // inflate the view
         final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_row, parent, false);
@@ -66,11 +69,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ListCo
             {
                 ContactTag contactTag = (ContactTag)itemView.getTag();
 
-                // first delete the contact from database
-                DatabaseHandler.getInstance().DeleteContact(parent.getContext(), contactTag.getContactId());
+                Intent intent = new Intent(parent.getContext(), ManageContactActivity.class);
+                intent.putExtra("contact_id", contactTag.getContactId());
+                intent.putExtra("contact_function_type", contactTag.getFunctionType().getValue());
+                parent.getContext().startActivity(intent);
 
-                // then delete from the GUI list
-                DatabaseHandler.getInstance().UpdateGUI(parent.getContext(), contactTag.getFunctionType());
+//                // first delete the contact from database
+//                DatabaseHandler.getInstance().DeleteContact(parent.getContext(), contactTag.getContactId());
+//                // then delete from the GUI list
+//                DatabaseHandler.getInstance().UpdateGUI(parent.getContext(), contactTag.getFunctionType());
             }
         };
 

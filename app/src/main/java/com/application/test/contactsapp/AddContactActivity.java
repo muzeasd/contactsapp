@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaFormat;
 import android.provider.MediaStore;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import data.ContactReaderContract;
 import data.ContactReaderDbHelper;
@@ -22,7 +24,7 @@ import utilities.BitmapUtility;
 public class AddContactActivity extends AppCompatActivity
 {
 
-    static final int REQUEST_IMAGE_CAPTURE = 1000;
+    static final int REQUEST_IMAGE_CAPTURE_ADD_CONTACT = 1000;
 
     ImageView m_ImageViewAddContact;
 
@@ -41,7 +43,7 @@ public class AddContactActivity extends AppCompatActivity
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if(cameraIntent.resolveActivity(getPackageManager()) != null)
                 {
-                    startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE_ADD_CONTACT);
                 }
             }
         });
@@ -71,7 +73,20 @@ public class AddContactActivity extends AppCompatActivity
         contact.setSkypeId(skypeId);
         contact.setPhoto(photo);
 
-        DatabaseHandler.getInstance().AddContact(this, contact);
+        long id = DatabaseHandler.getInstance().AddContact(this, contact);
+        if(id >= 0)
+        {
+            Toast.makeText(this, "Contact added", Toast.LENGTH_SHORT).show();
+
+            ((EditText) findViewById(R.id.txtName)).setText("");
+            ((EditText) findViewById(R.id.txtAddress)).setText("");
+            ((EditText) findViewById(R.id.txtCellNo)).setText("");
+            ((EditText) findViewById(R.id.txtEmail)).setText("");
+            ((EditText) findViewById(R.id.txtCity)).setText("");
+            ((EditText) findViewById(R.id.txtCountry)).setText("");
+            ((EditText) findViewById(R.id.txtSkypeId)).setText("");
+            m_ImageViewAddContact.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_person_black_36dp));
+        }
 
 //        byte[] imageBytes = null;
 //        if(photo != null)
@@ -100,7 +115,7 @@ public class AddContactActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK)
+        if(requestCode == REQUEST_IMAGE_CAPTURE_ADD_CONTACT && resultCode == RESULT_OK)
         {
             Bundle bundle = data.getExtras();
             Bitmap bmp = (Bitmap)bundle.get("data");

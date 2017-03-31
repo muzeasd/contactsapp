@@ -4,9 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.Toast;
 
 import com.application.test.contactsapp.MainActivity;
 import com.application.test.contactsapp.R;
@@ -67,19 +69,88 @@ public class DatabaseHandler
         return id;
     }
 
-    public void UpdateContact(Context context, Contact contact)
+    public boolean UpdateContact(Context context, Contact contact)
     {
+        boolean bResult = false;
+        try {
+            byte[] imageBytes = BitmapUtility.getBytes(contact.getPhoto());
 
+            // update database
+            SQLiteDatabase database = ContactReaderDbHelper.getInstance(context).getWritableDatabase();
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_NAME, contact.getName());
+            contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_ADDRESS, contact.getAddress());
+            contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_PHONE, contact.getPhoneNo());
+            contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_PHONETYPE, contact.getPhoneNoType());
+            contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_EMAILID, contact.getEmail());
+            contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_CITY, contact.getCity());
+            contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_COUNTRY, contact.getCountry());
+            contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_SKYPEID, contact.getSkypeId());
+            contentValues.put(ContactReaderContract.ContactEntry.COLUMN_NAME_PHOTO, imageBytes);
+
+            database.update(
+                    ContactReaderContract.ContactEntry.TABLE_NAME,
+                    contentValues,
+                    ContactReaderContract.ContactEntry._ID + "=?",
+                    new String[]{String.valueOf(contact.getId())});
+
+            bResult = true;
+        }
+        catch ( SQLException sqle)
+        {
+            Toast.makeText(context, sqle.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        return bResult;
     }
 
-    public void DeleteContact(Context context, int contactId)
+    public boolean DeleteContact(Context context, int contactId)
+    {
+        boolean bResult = false;
+        try {
+            // delete from database
+            SQLiteDatabase database = ContactReaderDbHelper.getInstance(context).getWritableDatabase();
+            String query = "DELETE FROM " + ContactReaderContract.ContactEntry.TABLE_NAME +
+                    " WHERE " + ContactReaderContract.ContactEntry._ID + " = " + contactId;
+
+            database.execSQL(query);
+            bResult = true;
+        }
+        catch (SQLException sqle)
+        {
+            Toast.makeText(context, sqle.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        return bResult;
+    }
+
+    public Contact FindContact(Context context, int contactId)
     {
         // delete from database
-        SQLiteDatabase database = ContactReaderDbHelper.getInstance(context).getWritableDatabase();
-        String query = "DELETE FROM " + ContactReaderContract.ContactEntry.TABLE_NAME +
+        SQLiteDatabase database = ContactReaderDbHelper.getInstance(context).getReadableDatabase();
+
+        String query = "SELECT * FROM " + ContactReaderContract.ContactEntry.TABLE_NAME +
                 " WHERE " + ContactReaderContract.ContactEntry._ID + " = " + contactId;
 
-        database.execSQL(query);
+        Cursor cursor = database.rawQuery(query, null);
+        if(cursor == null || cursor.getCount() == 0) return null;
+
+        cursor.moveToFirst();
+
+        Contact contact = new Contact();
+        contact.setId(cursor.getInt(cursor.getColumnIndex(ContactReaderContract.ContactEntry._ID)));
+        contact.setName(cursor.getString(cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_NAME)));
+        contact.setAddress(cursor.getString(cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_ADDRESS)));
+        contact.setPhoneNo(cursor.getString(cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_PHONE)));
+        contact.setPhoneNoType(cursor.getInt(cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_PHONETYPE)));
+        contact.setEmail(cursor.getString(cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_EMAILID)));
+        contact.setCity(cursor.getString(cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_CITY)));
+        contact.setCountry(cursor.getString(cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_COUNTRY)));
+        contact.setSkypeId(cursor.getString(cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_SKYPEID)));
+        contact.setPhoto(BitmapUtility.getImage(cursor.getBlob(cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_PHOTO))));
+
+        return contact;
     }
 
     public void UpdateGUI(Context context, FunctionType functionType)
