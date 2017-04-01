@@ -134,11 +134,28 @@
     </TableRow>
     <TableRow>
         <Button
+            android:id="@+id/btnSendText"
+            android:text="Send Text"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="OnClick_SendText"/>
+        <Button
+            android:id="@+id/btnMakeCall"
+            android:text="Make Call"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="OnClick_MakeCall"/>
+    </TableRow>
+    <TableRow>
+        <Button
             android:id="@+id/btnUpdateContact"
             android:text="Update Contact"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:visibility="invisible"
             android:onClick="OnClick_UpdateContact"/>
     </TableRow>
 

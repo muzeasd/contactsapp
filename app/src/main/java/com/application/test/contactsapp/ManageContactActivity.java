@@ -5,11 +5,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -87,11 +89,12 @@ public class ManageContactActivity extends AppCompatActivity
         m_ImageViewUpdateContact.setEnabled(false);
         (findViewById(R.id.textViewImageUpdateContact)).setVisibility(View.INVISIBLE);
 
-        FunctionType contactFunctionType = (mContactFunctionType == 0 ? FunctionType.ContactsApp : FunctionType.System);
-        Contact contact = DatabaseHandler.getInstance().FindContact(this, mContactId, contactFunctionType);
-
         // enable delete button only when it is sqlite contact
-        (findViewById(R.id.btnDeleteContact)).setEnabled(mContactFunctionType == 0 ? true : false);
+        FunctionType functionType = (mContactFunctionType == 0 ? FunctionType.ContactsApp : FunctionType.System);
+        (findViewById(R.id.btnDeleteContact)).setVisibility(functionType == FunctionType.ContactsApp ? View.VISIBLE : View.INVISIBLE);
+
+        // find contact with given contactId
+        Contact contact = DatabaseHandler.getInstance().FindContact(this, mContactId, functionType);
 
         // get all values and show them
         ((EditText) findViewById(R.id.txtNameUpdateContact)).setText(contact.getName());
@@ -131,6 +134,10 @@ public class ManageContactActivity extends AppCompatActivity
 
         if(isEnabled) (findViewById(R.id.textViewImageUpdateContact)).setVisibility(View.VISIBLE);
         else (findViewById(R.id.textViewImageUpdateContact)).setVisibility(View.INVISIBLE);
+
+        (findViewById(R.id.btnSendText)).setVisibility(isEnabled == true ? View.INVISIBLE : View.VISIBLE);
+        (findViewById(R.id.btnMakeCall)).setVisibility(isEnabled == true ? View.INVISIBLE : View.VISIBLE);
+        (findViewById(R.id.btnUpdateContact)).setVisibility(isEnabled == true ? View.VISIBLE : View.INVISIBLE);
     }
 
     public void OnClick_DeleteContact(final View view)
@@ -194,5 +201,20 @@ public class ManageContactActivity extends AppCompatActivity
         boolean bResult = dbHandler.UpdateContact(this, contact);
         if(bResult)
             Toast.makeText(this, "Contact updated.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void OnClick_SendText(View view)
+    {
+        String phoneNumber = ((EditText) findViewById(R.id.txtPhoneNoUpdateContact)).getText().toString();
+        Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+        sendIntent.setData(Uri.parse("sms:" + phoneNumber));
+        startActivity(sendIntent);
+    }
+
+    public void OnClick_MakeCall(View view)
+    {
+        String phoneNumber = ((EditText) findViewById(R.id.txtPhoneNoUpdateContact)).getText().toString();
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null));
+        startActivity(intent);
     }
 }
