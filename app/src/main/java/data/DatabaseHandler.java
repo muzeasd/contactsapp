@@ -125,7 +125,15 @@ public class DatabaseHandler
         return bResult;
     }
 
-    public Contact FindContact(Context context, int contactId)
+    public Contact FindContact(Context context, int contactId, FunctionType functionType)
+    {
+        if(functionType == FunctionType.ContactsApp)
+            return GetSqliteContact(context, contactId);
+        else return GetSystemContact();
+
+    }
+
+    private Contact GetSqliteContact(Context context, int contactId)
     {
         // delete from database
         SQLiteDatabase database = ContactReaderDbHelper.getInstance(context).getReadableDatabase();
@@ -151,6 +159,11 @@ public class DatabaseHandler
         contact.setPhoto(BitmapUtility.getImage(cursor.getBlob(cursor.getColumnIndex(ContactReaderContract.ContactEntry.COLUMN_NAME_PHOTO))));
 
         return contact;
+    }
+
+    private Contact GetSystemContact()
+    {
+        return null;
     }
 
     public void UpdateGUI(Context context, FunctionType functionType)

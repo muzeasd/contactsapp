@@ -87,8 +87,13 @@ public class ManageContactActivity extends AppCompatActivity
         m_ImageViewUpdateContact.setEnabled(false);
         (findViewById(R.id.textViewImageUpdateContact)).setVisibility(View.INVISIBLE);
 
-        Contact contact = DatabaseHandler.getInstance().FindContact(this, mContactId);
+        FunctionType contactFunctionType = (mContactFunctionType == 0 ? FunctionType.ContactsApp : FunctionType.System);
+        Contact contact = DatabaseHandler.getInstance().FindContact(this, mContactId, contactFunctionType);
 
+        // enable delete button only when it is sqlite contact
+        (findViewById(R.id.btnDeleteContact)).setEnabled(mContactFunctionType == 0 ? true : false);
+
+        // get all values and show them
         ((EditText) findViewById(R.id.txtNameUpdateContact)).setText(contact.getName());
         ((EditText) findViewById(R.id.txtAddressUpdateContact)).setText(contact.getAddress());
         ((EditText) findViewById(R.id.txtPhoneNoUpdateContact)).setText(contact.getPhoneNo());

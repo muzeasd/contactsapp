@@ -269,26 +269,31 @@ public class MainActivity extends AppCompatActivity
             contact.setName("System");
             contact.setAddress("Lahore");
             contact.setPhoneNo("123456789");
+            contact.setFunctionType(FunctionType.System);
 
             Contact contact2 = new Contact();
             contact2.setName("System");
             contact2.setAddress("Multan");
             contact2.setPhoneNo("123456789");
+            contact2.setFunctionType(FunctionType.System);
 
             Contact contact3 = new Contact();
             contact3.setName("System");
             contact3.setAddress("Karachi");
             contact3.setPhoneNo("123456789");
+            contact3.setFunctionType(FunctionType.System);
 
             Contact contact4 = new Contact();
             contact4.setName("System");
             contact4.setAddress("Pindi");
             contact4.setPhoneNo("123456789");
+            contact4.setFunctionType(FunctionType.System);
 
             Contact contact5 = new Contact();
             contact5.setName("System");
             contact5.setAddress("Haiderabad");
             contact5.setPhoneNo("123456789");
+            contact5.setFunctionType(FunctionType.System);
 
             mContactlist.add(contact);
             mContactlist.add(contact2);
