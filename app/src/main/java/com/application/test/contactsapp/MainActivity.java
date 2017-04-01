@@ -1,10 +1,17 @@
 package com.application.test.contactsapp;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -28,9 +35,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.view.Window;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.sql.Blob;
 import java.util.ArrayList;
@@ -140,6 +153,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    boolean isShown = false;
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -156,14 +170,33 @@ public class MainActivity extends AppCompatActivity
         }
         if (id == R.id.search_menu)
         {
-            Toast.makeText(this, "Search Menu", Toast.LENGTH_SHORT).show();
+            isShown = !isShown;
+
+            int fragmentIndex = mViewPager.getCurrentItem();
+            RelativeLayout rl = (RelativeLayout)findViewById(R.id.fragmentTabPage);
+            TextView tv = (TextView) rl.findViewById(fragmentIndex + 1); // fragment_index is ONE based & EditText's id
+            if(tv==null)
+            {
+                tv = new TextView(getBaseContext());
+                tv.setText("Dynamic TextView" + fragmentIndex);
+                tv.setBackgroundColor(Color.BLUE);
+                tv.setId(fragmentIndex);
+                tv.setVisibility(View.VISIBLE);
+                tv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                rl.addView(tv);
+            }
+            else
+            {
+                if (isShown) tv.setVisibility(View.VISIBLE);
+                else tv.setVisibility(View.INVISIBLE);
+            }
         }
         if (id == R.id.action_settings)
         {
             Toast.makeText(this, "Settings Menu", Toast.LENGTH_SHORT).show();
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     public SectionsPagerAdapter getSectionsPagerAdapter()
@@ -233,6 +266,19 @@ public class MainActivity extends AppCompatActivity
                 PrepareContacts_System();
             }
 
+            RelativeLayout rl = (RelativeLayout)rootView.findViewById(R.id.fragmentTabPage);
+            TextView tv = (TextView) rl.findViewById(FRAGMENT_INDEX);
+            if(tv==null)
+            {
+                tv = new TextView(getActivity());
+                tv.setText("Dynamic TextView - " + FRAGMENT_INDEX);
+                tv.setBackgroundColor(Color.BLUE);
+                tv.setId(FRAGMENT_INDEX);
+                tv.setVisibility(View.INVISIBLE);
+                tv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                rl.addView(tv);
+            }
+
             return rootView;
         }
 
@@ -263,44 +309,18 @@ public class MainActivity extends AppCompatActivity
 
         void PrepareContacts_System()
         {
+            DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+            List<Contact> contactList = dbHandler.GetContactsAll(FunctionType.System, getContext(), getResources());
+
             mContactlist.clear();
+            mContactlist.addAll(contactList);
 
-            Contact contact = new Contact();
-            contact.setName("System");
-            contact.setAddress("Lahore");
-            contact.setPhoneNo("123456789");
-            contact.setFunctionType(FunctionType.System);
-
-            Contact contact2 = new Contact();
-            contact2.setName("System");
-            contact2.setAddress("Multan");
-            contact2.setPhoneNo("123456789");
-            contact2.setFunctionType(FunctionType.System);
-
-            Contact contact3 = new Contact();
-            contact3.setName("System");
-            contact3.setAddress("Karachi");
-            contact3.setPhoneNo("123456789");
-            contact3.setFunctionType(FunctionType.System);
-
-            Contact contact4 = new Contact();
-            contact4.setName("System");
-            contact4.setAddress("Pindi");
-            contact4.setPhoneNo("123456789");
-            contact4.setFunctionType(FunctionType.System);
-
-            Contact contact5 = new Contact();
-            contact5.setName("System");
-            contact5.setAddress("Haiderabad");
-            contact5.setPhoneNo("123456789");
-            contact5.setFunctionType(FunctionType.System);
-
-            mContactlist.add(contact);
-            mContactlist.add(contact2);
-            mContactlist.add(contact3);
-            mContactlist.add(contact4);
-            mContactlist.add(contact5);
-
+            for(int index=0; index<mContactlist.size(); index++)
+            {
+                Contact contact = mContactlist.get(index);
+                if(contact.getPhoto() == null)
+                    contact.setPhoto(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_person_black_36dp));
+            }
 
             mAdapter.notifyDataSetChanged();
         }

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -89,23 +90,30 @@ public class ManageContactActivity extends AppCompatActivity
         m_ImageViewUpdateContact.setEnabled(false);
         (findViewById(R.id.textViewImageUpdateContact)).setVisibility(View.INVISIBLE);
 
-        // enable delete button only when it is sqlite contact
+        // Following 3 buttons' visibility depends upon whether it is sqlite contact ?
         FunctionType functionType = (mContactFunctionType == 0 ? FunctionType.ContactsApp : FunctionType.System);
         (findViewById(R.id.btnDeleteContact)).setVisibility(functionType == FunctionType.ContactsApp ? View.VISIBLE : View.INVISIBLE);
+        (findViewById(R.id.btnToggleEditContact)).setVisibility(functionType == FunctionType.ContactsApp ? View.VISIBLE : View.INVISIBLE);
+        //(findViewById(R.id.btnUpdateContact)).setVisibility(View.INVISIBLE);
 
         // find contact with given contactId
-        Contact contact = DatabaseHandler.getInstance().FindContact(this, mContactId, functionType);
+        Contact contact = DatabaseHandler.getInstance().FindContact(getApplicationContext(), mContactId, functionType);
+        if(contact != null)
+        {
+            if(contact.getPhoto() == null)
+                contact.setPhoto(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_person_black_36dp));
 
-        // get all values and show them
-        ((EditText) findViewById(R.id.txtNameUpdateContact)).setText(contact.getName());
-        ((EditText) findViewById(R.id.txtAddressUpdateContact)).setText(contact.getAddress());
-        ((EditText) findViewById(R.id.txtPhoneNoUpdateContact)).setText(contact.getPhoneNo());
-        m_SpinnerPhoneNoType.setSelection(contact.getPhoneNoType());
-        ((EditText) findViewById(R.id.txtEmailUpdateContact)).setText(contact.getEmail());
-        ((EditText) findViewById(R.id.txtCityUpdateContact)).setText(contact.getCity());
-        ((EditText) findViewById(R.id.txtCountryUpdateContact)).setText(contact.getCountry());
-        ((EditText) findViewById(R.id.txtSkypeIdUpdateContact)).setText(contact.getSkypeId());
-        m_ImageViewUpdateContact.setImageBitmap(contact.getPhoto());
+            // get all values and show them
+            ((EditText) findViewById(R.id.txtNameUpdateContact)).setText(contact.getName());
+            ((EditText) findViewById(R.id.txtAddressUpdateContact)).setText(contact.getAddress());
+            ((EditText) findViewById(R.id.txtPhoneNoUpdateContact)).setText(contact.getPhoneNo());
+            m_SpinnerPhoneNoType.setSelection(contact.getPhoneNoType());
+            ((EditText) findViewById(R.id.txtEmailUpdateContact)).setText(contact.getEmail());
+            ((EditText) findViewById(R.id.txtCityUpdateContact)).setText(contact.getCity());
+            ((EditText) findViewById(R.id.txtCountryUpdateContact)).setText(contact.getCountry());
+            ((EditText) findViewById(R.id.txtSkypeIdUpdateContact)).setText(contact.getSkypeId());
+            m_ImageViewUpdateContact.setImageBitmap(contact.getPhoto());
+        }
     }
 
     @Override
@@ -117,6 +125,17 @@ public class ManageContactActivity extends AppCompatActivity
             Bitmap bmp = (Bitmap)bundle.get("data");
             ((ImageView)findViewById(R.id.imageViewUpdateContact)).setImageBitmap(bmp);
         }
+    }
+
+    private void ToggleEditCommunicationButtons(boolean value)
+    {
+        (findViewById(R.id.btnSendText)).setEnabled(value);
+        (findViewById(R.id.btnMakeCall)).setEnabled(value);
+    }
+
+    private void ToggleEditUpdateButton(boolean value)
+    {
+        ((Button)findViewById(R.id.btnUpdateContact)).setEnabled(value);
     }
 
     public void OnClick_ToggleEdit(View view)
@@ -132,12 +151,10 @@ public class ManageContactActivity extends AppCompatActivity
         (findViewById(R.id.txtSkypeIdUpdateContact)).setEnabled(isEnabled);
         m_SpinnerPhoneNoType.setEnabled(isEnabled);
 
-        if(isEnabled) (findViewById(R.id.textViewImageUpdateContact)).setVisibility(View.VISIBLE);
-        else (findViewById(R.id.textViewImageUpdateContact)).setVisibility(View.INVISIBLE);
+        ToggleEditCommunicationButtons(isEnabled ? false : true);
+        ToggleEditUpdateButton(isEnabled ? true : false);
 
-        (findViewById(R.id.btnSendText)).setVisibility(isEnabled == true ? View.INVISIBLE : View.VISIBLE);
-        (findViewById(R.id.btnMakeCall)).setVisibility(isEnabled == true ? View.INVISIBLE : View.VISIBLE);
-        (findViewById(R.id.btnUpdateContact)).setVisibility(isEnabled == true ? View.VISIBLE : View.INVISIBLE);
+        (findViewById(R.id.textViewImageUpdateContact)).setVisibility(isEnabled ? View.VISIBLE : View.INVISIBLE);
     }
 
     public void OnClick_DeleteContact(final View view)
@@ -171,7 +188,7 @@ public class ManageContactActivity extends AppCompatActivity
 
     public void OnClick_UpdateContact(View view)
     {
-        if(!isEnabled) return;
+        if(!isEnabled)return;
 
         String name = ((EditText) findViewById(R.id.txtNameUpdateContact)).getText().toString();
         String address = ((EditText) findViewById(R.id.txtAddressUpdateContact)).getText().toString();

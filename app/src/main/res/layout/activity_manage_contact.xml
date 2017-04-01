@@ -45,6 +45,7 @@
             <TableRow>
                 <TextView android:layout_weight="2"/>
                 <ImageView
+                    android:id="@+id/btnToggleEditContact"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
@@ -155,8 +156,9 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
+            android:enabled="false"
             android:onClick="OnClick_UpdateContact"/>
     </TableRow>
+    <!--android:visibility="invisible"-->
 
 </TableLayout>
