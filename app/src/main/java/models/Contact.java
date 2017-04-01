@@ -28,7 +28,7 @@ public class Contact implements Parcelable
 
     public void setPhoneNoType(int index)
     {
-        this.phoneNoType = index == 1 ? PhoneNoType.Mobile : PhoneNoType.Landline;
+        this.phoneNoType = (index == 0 ? PhoneNoType.Mobile : PhoneNoType.Landline);
     }
 
     public int getPhoneNoType()

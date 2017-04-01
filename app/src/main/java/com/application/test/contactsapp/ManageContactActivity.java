@@ -9,10 +9,15 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import constants.FunctionType;
 import data.DatabaseHandler;
@@ -30,6 +35,8 @@ public class ManageContactActivity extends AppCompatActivity
     boolean isEnabled = false;
 
     static final int REQUEST_IMAGE_CAPTURE_MANAGE_CONTACT = 1010;
+
+    Spinner m_SpinnerPhoneNoType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -50,13 +57,25 @@ public class ManageContactActivity extends AppCompatActivity
             }
         };
 
+        // Add PhoneNoType
+        m_SpinnerPhoneNoType = ((Spinner) findViewById(R.id.spinnerPhoneNoTypeUpdateContact));
+        List<String> list = new ArrayList<>();
+        list.add("Mobile");
+        list.add("Landline");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        m_SpinnerPhoneNoType.setAdapter(dataAdapter);
+
+        // set ClickListener on ImageView
         m_ImageViewUpdateContact = (ImageView) findViewById(R.id.imageViewUpdateContact);
         m_ImageViewUpdateContact.setOnClickListener(imageBoxClickListener);
         (findViewById(R.id.textViewImageUpdateContact)).setOnClickListener(imageBoxClickListener);
 
+        // retrieve data from intent_extra
         mContactId = getIntent().getIntExtra("contact_id", -1);
         mContactFunctionType = getIntent().getIntExtra("contact_function_type", -1);
 
+        // setup initial gui
         (findViewById(R.id.txtNameUpdateContact)).setEnabled(false);
         (findViewById(R.id.txtAddressUpdateContact)).setEnabled(false);
         (findViewById(R.id.txtPhoneNoUpdateContact)).setEnabled(false);
@@ -64,6 +83,7 @@ public class ManageContactActivity extends AppCompatActivity
         (findViewById(R.id.txtCityUpdateContact)).setEnabled(false);
         (findViewById(R.id.txtCountryUpdateContact)).setEnabled(false);
         (findViewById(R.id.txtSkypeIdUpdateContact)).setEnabled(false);
+        m_SpinnerPhoneNoType.setEnabled(false);
         m_ImageViewUpdateContact.setEnabled(false);
         (findViewById(R.id.textViewImageUpdateContact)).setVisibility(View.INVISIBLE);
 
@@ -72,7 +92,7 @@ public class ManageContactActivity extends AppCompatActivity
         ((EditText) findViewById(R.id.txtNameUpdateContact)).setText(contact.getName());
         ((EditText) findViewById(R.id.txtAddressUpdateContact)).setText(contact.getAddress());
         ((EditText) findViewById(R.id.txtPhoneNoUpdateContact)).setText(contact.getPhoneNo());
-        int phoneNoType = 1;//index of a spinner (ONE based index)
+        m_SpinnerPhoneNoType.setSelection(contact.getPhoneNoType());
         ((EditText) findViewById(R.id.txtEmailUpdateContact)).setText(contact.getEmail());
         ((EditText) findViewById(R.id.txtCityUpdateContact)).setText(contact.getCity());
         ((EditText) findViewById(R.id.txtCountryUpdateContact)).setText(contact.getCountry());
@@ -102,6 +122,7 @@ public class ManageContactActivity extends AppCompatActivity
         (findViewById(R.id.txtCityUpdateContact)).setEnabled(isEnabled);
         (findViewById(R.id.txtCountryUpdateContact)).setEnabled(isEnabled);
         (findViewById(R.id.txtSkypeIdUpdateContact)).setEnabled(isEnabled);
+        m_SpinnerPhoneNoType.setEnabled(isEnabled);
 
         if(isEnabled) (findViewById(R.id.textViewImageUpdateContact)).setVisibility(View.VISIBLE);
         else (findViewById(R.id.textViewImageUpdateContact)).setVisibility(View.INVISIBLE);
@@ -143,12 +164,14 @@ public class ManageContactActivity extends AppCompatActivity
         String name = ((EditText) findViewById(R.id.txtNameUpdateContact)).getText().toString();
         String address = ((EditText) findViewById(R.id.txtAddressUpdateContact)).getText().toString();
         String phoneNo = ((EditText) findViewById(R.id.txtPhoneNoUpdateContact)).getText().toString();
-        int phoneNoType = 1;//index of a spinner (ONE based index)
         String email = ((EditText) findViewById(R.id.txtEmailUpdateContact)).getText().toString();
         String city = ((EditText) findViewById(R.id.txtCityUpdateContact)).getText().toString();
         String country = ((EditText) findViewById(R.id.txtCountryUpdateContact)).getText().toString();
         String skypeId = ((EditText) findViewById(R.id.txtSkypeIdUpdateContact)).getText().toString();
         Bitmap photo = ((BitmapDrawable)m_ImageViewUpdateContact.getDrawable()).getBitmap();
+
+        String strPhoneNoType = (String)m_SpinnerPhoneNoType.getSelectedItem();
+        int phoneNoType = (strPhoneNoType.trim().toLowerCase().equals("mobile") ? 0 : 1);
 
         Contact contact = new Contact();
         contact.setId(mContactId);

@@ -11,9 +11,14 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import data.ContactReaderContract;
 import data.ContactReaderDbHelper;
@@ -27,7 +32,7 @@ public class AddContactActivity extends AppCompatActivity
     static final int REQUEST_IMAGE_CAPTURE_ADD_CONTACT = 1000;
 
     ImageView m_ImageViewAddContact;
-
+    Spinner m_SpinnerPhoneNoType;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -47,6 +52,15 @@ public class AddContactActivity extends AppCompatActivity
                 }
             }
         });
+
+        m_SpinnerPhoneNoType = (Spinner) findViewById(R.id.spinnerPhoneNoType);
+        List<String> list = new ArrayList<>();
+        list.add("Mobile");
+        list.add("Landline");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        m_SpinnerPhoneNoType.setAdapter(dataAdapter);
+        m_SpinnerPhoneNoType.setSelection(0);
     }
 
     /*  Must Be public, Must Return void, Must define a View as parameter (this was the view we clicked on)*/
@@ -55,12 +69,14 @@ public class AddContactActivity extends AppCompatActivity
         String name = ((EditText) findViewById(R.id.txtName)).getText().toString();
         String address = ((EditText) findViewById(R.id.txtAddress)).getText().toString();
         String phoneNo = ((EditText) findViewById(R.id.txtCellNo)).getText().toString();
-        int phoneNoType = 1;//index of a spinner (ONE based index)
         String email = ((EditText) findViewById(R.id.txtEmail)).getText().toString();
         String city = ((EditText) findViewById(R.id.txtCity)).getText().toString();
         String country = ((EditText) findViewById(R.id.txtCountry)).getText().toString();
         String skypeId = ((EditText) findViewById(R.id.txtSkypeId)).getText().toString();
         Bitmap photo = ((BitmapDrawable)m_ImageViewAddContact.getDrawable()).getBitmap();
+
+        String strPhoneNoType = (String)m_SpinnerPhoneNoType.getSelectedItem();
+        int phoneNoType = (strPhoneNoType.trim().toLowerCase().equals("mobile") ? 0 : 1);
 
         Contact contact = new Contact();
         contact.setName(name);

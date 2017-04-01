@@ -6,8 +6,8 @@ package constants;
 
 public enum PhoneNoType
 {
-    Mobile(1),
-    Landline(2);
+    Mobile(0),
+    Landline(1);
 
     private int id;
     PhoneNoType(int id) {this.id = id;}
