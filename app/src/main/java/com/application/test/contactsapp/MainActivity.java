@@ -1,7 +1,9 @@
 package com.application.test.contactsapp;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -28,6 +30,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -153,7 +158,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    boolean isShown = false;
+    boolean isFindContact = false;
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -170,26 +175,9 @@ public class MainActivity extends AppCompatActivity
         }
         if (id == R.id.search_menu)
         {
-            isShown = !isShown;
-
-            int fragmentIndex = mViewPager.getCurrentItem();
-            RelativeLayout rl = (RelativeLayout)findViewById(R.id.fragmentTabPage);
-            TextView tv = (TextView) rl.findViewById(fragmentIndex + 1); // fragment_index is ONE based & EditText's id
-            if(tv==null)
-            {
-                tv = new TextView(getBaseContext());
-                tv.setText("Dynamic TextView" + fragmentIndex);
-                tv.setBackgroundColor(Color.BLUE);
-                tv.setId(fragmentIndex);
-                tv.setVisibility(View.VISIBLE);
-                tv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                rl.addView(tv);
-            }
-            else
-            {
-                if (isShown) tv.setVisibility(View.VISIBLE);
-                else tv.setVisibility(View.INVISIBLE);
-            }
+            int currentFragmentIndex = mViewPager.getCurrentItem();
+            Fragment currentFragment = mSectionsPagerAdapter.getFragment(currentFragmentIndex);
+            ((PlaceholderFragment)currentFragment).ToggleDisplaySearchEditBox();
         }
         if (id == R.id.action_settings)
         {
@@ -213,6 +201,8 @@ public class MainActivity extends AppCompatActivity
         private List<Contact> mContactlist = new ArrayList<>();
         private RecyclerView mRecyclerView;
         private ContactsAdapter mAdapter;
+        private View mThisFragmentView;
+        boolean isFindContact = false;
 
         /**
          * The fragment argument representing the section number for this
@@ -266,27 +256,93 @@ public class MainActivity extends AppCompatActivity
                 PrepareContacts_System();
             }
 
-            RelativeLayout rl = (RelativeLayout)rootView.findViewById(R.id.fragmentTabPage);
-            TextView tv = (TextView) rl.findViewById(FRAGMENT_INDEX);
-            if(tv==null)
+            RelativeLayout relativeLayout = (RelativeLayout)rootView.findViewById(R.id.fragmentTabPage);
+            EditText searchBox = (EditText) relativeLayout.findViewById(FRAGMENT_INDEX);
+            if(searchBox==null)
             {
-                tv = new TextView(getActivity());
-                tv.setText("Dynamic TextView - " + FRAGMENT_INDEX);
-                tv.setBackgroundColor(Color.BLUE);
-                tv.setId(FRAGMENT_INDEX);
-                tv.setVisibility(View.INVISIBLE);
-                tv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                rl.addView(tv);
+                searchBox = new EditText(getActivity());
+                searchBox.setHint("Enter Search Name");
+                searchBox.setId(FRAGMENT_INDEX);
+                searchBox.setVisibility(View.INVISIBLE);
+                searchBox.setBackgroundResource(R.drawable.searchboxborder);
+                searchBox.addTextChangedListener(textChangeListener);
+
+                int paddingPixel = 20;
+                float density = getContext().getResources().getDisplayMetrics().density;
+                int paddingDp = (int)(paddingPixel * density);
+                searchBox.setPadding(paddingDp, paddingDp / 2, 0, paddingDp / 2);
+
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.topMargin = 1000;
+
+                searchBox.setLayoutParams(layoutParams);
+
+
+                relativeLayout.addView(searchBox);
             }
+
+            mThisFragmentView = rootView;
 
             return rootView;
         }
+
+        TextWatcher textChangeListener = new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                List<Contact> refinedList = new ArrayList<>();
+
+                String searchText = s.toString().trim().toLowerCase();
+                if(searchText.length() <= 0)
+                {
+                    mAdapter = new ContactsAdapter(mContactlist);
+                    mRecyclerView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                }
+                else
+                {
+                    for (int index = 0; index < mContactlist.size(); index++) {
+                        Contact contact = mContactlist.get(index);
+                        String currentContactName = contact.getName().trim().toLowerCase();
+
+                        if (currentContactName.contains(searchText))
+                            refinedList.add(contact);
+                    }
+
+                    mAdapter = new ContactsAdapter(refinedList);
+                    mRecyclerView.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+
+            }
+        };
 
         @Override
         public void onStart()
         {
             super.onStart();
             UpdateGUI(FRAGMENT_INDEX == 1 ? FunctionType.ContactsApp : FunctionType.System);
+        }
+
+        public void ToggleDisplaySearchEditBox()
+        {
+            isFindContact = !isFindContact;
+            RelativeLayout rl = (RelativeLayout) mThisFragmentView.findViewById(R.id.fragmentTabPage);
+            TextView tv = (TextView) rl.findViewById(FRAGMENT_INDEX);
+            tv.setVisibility(isFindContact ? View.VISIBLE : View.INVISIBLE);
         }
 
         public void UpdateGUI(FunctionType functionType)
